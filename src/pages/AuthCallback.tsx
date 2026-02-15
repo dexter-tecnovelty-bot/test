@@ -41,7 +41,7 @@ const AuthCallback = () => {
       }
     };
 
-    resolveSession().catch(() => undefined);
+    resolveSession();
   }, [navigate]);
 
   if (!error) {

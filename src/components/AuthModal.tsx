@@ -39,6 +39,27 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const getCallbackUrl = () => `${window.location.origin}/auth/callback`;
 
+const AUTH_MODE_CONFIG: Record<
+  AuthMode,
+  { title: string; modeLabel: string; submitLabel: string }
+> = {
+  signup: {
+    title: 'Create your account',
+    modeLabel: 'Sign Up',
+    submitLabel: 'Create Account',
+  },
+  login: {
+    title: 'Log in',
+    modeLabel: 'Log In',
+    submitLabel: 'Log In',
+  },
+  magic_link: {
+    title: 'Continue with magic link',
+    modeLabel: 'Magic Link',
+    submitLabel: 'Send Magic Link',
+  },
+};
+
 const mapAuthError = (codeOrMessage: string): string => {
   const value = codeOrMessage.toLowerCase();
 
@@ -152,21 +173,15 @@ const authReducer = (state: AuthFormState, action: AuthAction): AuthFormState =>
 };
 
 const getTitle = (mode: AuthMode): string => {
-  if (mode === 'signup') return 'Create your account';
-  if (mode === 'magic_link') return 'Continue with magic link';
-  return 'Log in';
+  return AUTH_MODE_CONFIG[mode].title;
 };
 
 const getModeLabel = (mode: AuthMode): string => {
-  if (mode === 'magic_link') return 'Magic Link';
-  if (mode === 'signup') return 'Sign Up';
-  return 'Log In';
+  return AUTH_MODE_CONFIG[mode].modeLabel;
 };
 
 const getSubmitLabel = (mode: AuthMode): string => {
-  if (mode === 'signup') return 'Create Account';
-  if (mode === 'magic_link') return 'Send Magic Link';
-  return 'Log In';
+  return AUTH_MODE_CONFIG[mode].submitLabel;
 };
 
 const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalProps) => {
@@ -210,7 +225,7 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
 
         dispatch({ type: 'SUBMIT_SUCCEEDED' });
 
-        if (data.user?.id) {
+        if (data.user && data.session) {
           onAuthSuccess(data.user.id);
           onClose();
           return;
@@ -244,7 +259,7 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
 
       dispatch({ type: 'SUBMIT_SUCCEEDED' });
 
-      if (data.user?.id) {
+      if (data.user && data.session) {
         onAuthSuccess(data.user.id);
         onClose();
         return;
@@ -255,6 +270,8 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
         payload: { error: 'Authentication failed. Please try again.' },
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Authentication error:', error);
       const message = error instanceof Error ? error.message : 'Authentication failed.';
       dispatch({
         type: 'SUBMIT_FAILED',
@@ -279,6 +296,8 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
 
       dispatch({ type: 'SUBMIT_SUCCEEDED' });
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Google OAuth error:', error);
       const message = error instanceof Error ? error.message : 'Authentication failed.';
       dispatch({
         type: 'SUBMIT_FAILED',
@@ -339,6 +358,7 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
 
         {mode === 'signup' && (
           <div>
+            {/* TODO: Verify Checkbox error-state styling/ARIA consistency with other form controls. */}
             <Checkbox
               label="I agree to the Terms and Privacy Policy."
               checked={acceptTerms}
