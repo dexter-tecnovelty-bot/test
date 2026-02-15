@@ -3,25 +3,45 @@ import { useNavigate } from 'react-router-dom';
 import Button from './ui/Button';
 import Section from './ui/Section';
 
-const plans = [
+const differentiators = ['API Limits', 'Support SLA', 'Team Seats'] as const;
+
+type Differentiator = (typeof differentiators)[number];
+
+interface Plan {
+  name: string;
+  summary: string;
+  values: Record<Differentiator, string>;
+}
+
+const plans: readonly Plan[] = [
   {
     name: 'Free',
     summary: 'For early exploration',
-    values: ['10k / month', 'Community support', 'Up to 3 seats'],
+    values: {
+      'API Limits': '10k / month',
+      'Support SLA': 'Community support',
+      'Team Seats': 'Up to 3 seats',
+    },
   },
   {
     name: 'Pro',
     summary: 'For growing teams',
-    values: ['250k / month', '24-hour SLA', 'Up to 25 seats'],
+    values: {
+      'API Limits': '250k / month',
+      'Support SLA': '24-hour SLA',
+      'Team Seats': 'Up to 25 seats',
+    },
   },
   {
     name: 'Enterprise',
     summary: 'For advanced organizations',
-    values: ['Custom limits', '1-hour SLA', 'Unlimited seats'],
+    values: {
+      'API Limits': 'Custom limits',
+      'Support SLA': '1-hour SLA',
+      'Team Seats': 'Unlimited seats',
+    },
   },
 ] as const;
-
-const differentiators = ['API Limits', 'Support SLA', 'Team Seats'] as const;
 
 const PricingTeaser = () => {
   const navigate = useNavigate();
@@ -49,7 +69,7 @@ const PricingTeaser = () => {
             </tr>
           </thead>
           <tbody>
-            {differentiators.map((differentiator, index) => (
+            {differentiators.map((differentiator) => (
               <tr key={differentiator} className="border-b border-slate-200 last:border-b-0">
                 <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">
                   {differentiator}
@@ -59,7 +79,7 @@ const PricingTeaser = () => {
                     key={`${plan.name}-${differentiator}`}
                     className="px-4 py-4 text-sm text-slate-700"
                   >
-                    {plan.values[index]}
+                    {plan.values[differentiator]}
                   </td>
                 ))}
               </tr>

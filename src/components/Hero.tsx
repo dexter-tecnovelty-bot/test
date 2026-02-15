@@ -4,8 +4,8 @@ import Section from './ui/Section';
 interface HeroProps {
   headline: string;
   subheadline: string;
-  primaryCtaLabel: 'Get Started';
-  secondaryCtaLabel: 'Watch Demo';
+  primaryCtaLabel: string;
+  secondaryCtaLabel: string;
   onPrimaryCtaClick: () => void;
   onSecondaryCtaClick: () => void;
 }
