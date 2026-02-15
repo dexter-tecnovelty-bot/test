@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { initializeMonitoring } from './services/monitoring';
-import './index.css';
+import './styles/global.css';
 
 initializeMonitoring();
 

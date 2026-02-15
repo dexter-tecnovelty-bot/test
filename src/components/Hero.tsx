@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import Button from './ui/Button';
 import Section from './ui/Section';
 import { trackCtaClick } from '../services/analytics';
@@ -10,6 +11,93 @@ interface HeroProps {
   onPrimaryCtaClick: () => void;
   onSecondaryCtaClick: () => void;
 }
+
+interface DeferredImageProps {
+  avifSrc: string;
+  webpSrc: string;
+  fallbackSrc: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+const HERO_IMAGE = {
+  avif: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?fm=avif&q=70&w=1280&h=720&fit=crop',
+  webp: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?fm=webp&q=70&w=1280&h=720&fit=crop',
+  fallback:
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?fm=jpg&q=75&w=1280&h=720&fit=crop',
+} as const;
+
+const SECONDARY_IMAGE = {
+  avif: 'https://images.unsplash.com/photo-1551434678-e076c223a692?fm=avif&q=70&w=1280&h=720&fit=crop',
+  webp: 'https://images.unsplash.com/photo-1551434678-e076c223a692?fm=webp&q=70&w=1280&h=720&fit=crop',
+  fallback:
+    'https://images.unsplash.com/photo-1551434678-e076c223a692?fm=jpg&q=75&w=1280&h=720&fit=crop',
+} as const;
+
+const DeferredImage = ({
+  avifSrc,
+  webpSrc,
+  fallbackSrc,
+  alt,
+  width,
+  height,
+}: DeferredImageProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) {
+      return undefined;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      setIsVisible(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
+      style={{ aspectRatio: `${width} / ${height}` }}
+    >
+      {isVisible ? (
+        <picture>
+          <source srcSet={avifSrc} type="image/avif" />
+          <source srcSet={webpSrc} type="image/webp" />
+          <img
+            src={fallbackSrc}
+            alt={alt}
+            width={width}
+            height={height}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+            style={{ aspectRatio: `${width} / ${height}` }}
+          />
+        </picture>
+      ) : (
+        <div className="h-full w-full animate-pulse bg-slate-100" aria-hidden="true" />
+      )}
+    </div>
+  );
+};
 
 const Hero = ({
   headline,
@@ -45,33 +133,39 @@ const Hero = ({
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[560px]">
-          <svg
-            viewBox="0 0 560 420"
-            width={560}
-            height={420}
-            className="h-auto w-full overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-xl"
-            role="img"
-            aria-label="Product analytics dashboard preview"
+        <div className="mx-auto w-full max-w-[640px]">
+          <div
+            className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-xl"
+            style={{ aspectRatio: '16 / 9' }}
           >
-            <rect x="0" y="0" width="560" height="420" fill="#F8FAFC" />
-            <rect x="0" y="0" width="560" height="58" fill="#E2E8F0" />
-            <circle cx="28" cy="29" r="7" fill="#F59E0B" />
-            <circle cx="52" cy="29" r="7" fill="#10B981" />
-            <circle cx="76" cy="29" r="7" fill="#3B82F6" />
-            <rect x="34" y="96" width="232" height="134" rx="12" fill="#DBEAFE" />
-            <rect x="292" y="96" width="232" height="70" rx="12" fill="#D1FAE5" />
-            <rect x="292" y="178" width="232" height="52" rx="12" fill="#FDE68A" />
-            <rect x="34" y="252" width="490" height="136" rx="12" fill="#FFFFFF" />
-            <path
-              d="M72 352L144 311L210 334L292 279L356 301L412 274L486 291"
-              stroke="#3B82F6"
-              strokeWidth="6"
-              fill="none"
-              strokeLinecap="round"
-            />
-          </svg>
+            <picture>
+              <source srcSet={HERO_IMAGE.avif} type="image/avif" />
+              <source srcSet={HERO_IMAGE.webp} type="image/webp" />
+              <img
+                src={HERO_IMAGE.fallback}
+                alt="Product analytics dashboard preview"
+                width={1280}
+                height={720}
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
+                className="h-full w-full object-cover"
+                style={{ aspectRatio: '16 / 9' }}
+              />
+            </picture>
+          </div>
         </div>
+      </div>
+
+      <div className="mt-12">
+        <DeferredImage
+          avifSrc={SECONDARY_IMAGE.avif}
+          webpSrc={SECONDARY_IMAGE.webp}
+          fallbackSrc={SECONDARY_IMAGE.fallback}
+          alt="Team reviewing launch metrics in a workspace"
+          width={1280}
+          height={720}
+        />
       </div>
     </Section>
   );

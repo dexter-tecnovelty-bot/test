@@ -9,7 +9,7 @@ export default {
           primary: '#3B82F6',
           secondary: '#10B981',
           accent: '#F59E0B',
-          neutral: '#64748B',
+          neutral: '#475569',
           background: '#FFFFFF',
         },
       },

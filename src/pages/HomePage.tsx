@@ -1,10 +1,5 @@
-const HomePage = () => (
-  <main className="mx-auto flex min-h-screen w-full max-w-4xl items-center justify-center px-6 py-12">
-    <section className="text-center">
-      <h1 className="text-3xl font-bold text-slate-900">Vite + React 18 + TypeScript</h1>
-      <p className="mt-4 text-base text-slate-600">Project bootstrap complete.</p>
-    </section>
-  </main>
-);
+import LandingPage from '../components/LandingPage';
+
+const HomePage = () => <LandingPage />;
 
 export default HomePage;
