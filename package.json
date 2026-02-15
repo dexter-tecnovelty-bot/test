@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
+    "@sentry/react": "^10.12.0",
     "@supabase/supabase-js": "^2.95.3",
+    "@vercel/analytics": "^1.5.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.564.0",
     "react": "^18.3.1",
