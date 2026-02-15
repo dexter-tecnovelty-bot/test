@@ -3,14 +3,6 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": [
-    "src",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "vite.config.ts",
-    "tailwind.config.ts",
-    "postcss.config.cjs",
-    ".eslintrc.cjs"
-  ],
+  "include": ["src", "vite.config.ts", "tailwind.config.ts", "postcss.config.cjs", ".eslintrc.cjs"],
   "exclude": []
 }

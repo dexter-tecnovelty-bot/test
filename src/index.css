@@ -6,8 +6,10 @@
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #111827;
-  background-color: #f9fafb;
+  --color-text: #111827;
+  --color-background: #f9fafb;
+  color: var(--color-text);
+  background-color: var(--color-background);
 }
 
 * {

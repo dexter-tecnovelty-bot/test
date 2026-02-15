@@ -3,24 +3,24 @@ module.exports = {
   env: {
     browser: true,
     es2022: true,
-    node: true
+    node: true,
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./tsconfig.eslint.json']
+    project: ['./tsconfig.eslint.json'],
   },
   settings: {
     react: {
-      version: 'detect'
+      version: 'detect',
     },
     'import/resolver': {
-      typescript: {}
-    }
+      typescript: {},
+    },
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'prettier'],
   extends: [
@@ -28,7 +28,7 @@ module.exports = {
     'airbnb-typescript',
     'airbnb/hooks',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
   ],
   rules: {
     'react/react-in-jsx-scope': 'off',
@@ -36,15 +36,15 @@ module.exports = {
       'error',
       {
         namedComponents: 'arrow-function',
-        unnamedComponents: 'arrow-function'
-      }
+        unnamedComponents: 'arrow-function',
+      },
     ],
     'import/prefer-default-export': 'off',
     '@typescript-eslint/consistent-type-imports': [
       'error',
       {
-        prefer: 'type-imports'
-      }
+        prefer: 'type-imports',
+      },
     ],
     'import/no-extraneous-dependencies': [
       'error',
@@ -55,10 +55,10 @@ module.exports = {
           'src/tests/**',
           '*.config.ts',
           '*.config.cjs',
-          '.eslintrc.cjs'
-        ]
-      }
-    ]
+          '.eslintrc.cjs',
+        ],
+      },
+    ],
   },
-  ignorePatterns: ['dist', 'coverage', 'node_modules']
+  ignorePatterns: ['dist', 'coverage', 'node_modules'],
 };
