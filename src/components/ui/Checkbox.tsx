@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { Check } from 'lucide-react';
 import { useId } from 'react';
 import type { InputHTMLAttributes } from 'react';
 
@@ -49,18 +50,7 @@ const Checkbox = ({
             'peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-primary'
           )}
         >
-          <svg
-            viewBox="0 0 20 20"
-            fill="none"
-            className="h-3.5 w-3.5 text-white opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
-          >
-            <path
-              d="m4.5 10 3.5 3.5L15.5 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
+          <Check className="h-3.5 w-3.5 text-white opacity-0 transition-opacity duration-200 peer-checked:opacity-100" />
         </span>
       </span>
       <span>{label}</span>

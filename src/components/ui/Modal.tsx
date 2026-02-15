@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import * as Dialog from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface ModalProps {
@@ -29,9 +30,7 @@ const Modal = ({ isOpen, onClose, title, children, className }: ModalProps) => (
               aria-label="Close modal"
               className="inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
             >
-              <span aria-hidden="true" className="text-2xl leading-none">
-                ×
-              </span>
+              <X aria-hidden="true" className="h-6 w-6" />
             </button>
           </Dialog.Close>
         </div>

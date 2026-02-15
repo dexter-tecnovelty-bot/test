@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { Loader } from 'lucide-react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {
@@ -12,6 +13,18 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'dis
   // eslint-disable-next-line react/require-default-props
   disabled?: boolean;
 }
+
+const variantClasses = {
+  primary: 'bg-brand-primary text-white hover:bg-blue-600',
+  secondary: 'bg-brand-secondary text-white hover:bg-emerald-600',
+  ghost: 'border border-brand-primary bg-transparent text-brand-primary hover:bg-blue-50',
+} as const;
+
+const sizeClasses = {
+  sm: 'min-h-9 px-3 text-sm',
+  md: 'min-h-11 px-4 text-cta',
+  lg: 'min-h-12 px-6 text-lg',
+} as const;
 
 const Button = ({
   children,
@@ -32,15 +45,8 @@ const Button = ({
       className={clsx(
         'inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors duration-200',
         'disabled:cursor-not-allowed disabled:opacity-60',
-        {
-          'bg-brand-primary text-white hover:bg-blue-600': variant === 'primary',
-          'bg-brand-secondary text-white hover:bg-emerald-600': variant === 'secondary',
-          'border border-brand-primary bg-transparent text-brand-primary hover:bg-blue-50':
-            variant === 'ghost',
-          'min-h-9 px-3 text-sm': size === 'sm',
-          'min-h-11 px-4 text-cta': size === 'md',
-          'min-h-12 px-6 text-lg': size === 'lg',
-        },
+        variantClasses[variant],
+        sizeClasses[size],
         className
       )}
       // eslint-disable-next-line react/jsx-props-no-spreading
@@ -48,7 +54,7 @@ const Button = ({
     >
       {isLoading && (
         <>
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          <Loader className="h-4 w-4 animate-spin" />
           <span className="sr-only">Loading</span>
         </>
       )}
