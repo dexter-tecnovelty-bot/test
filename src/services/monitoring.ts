@@ -27,7 +27,7 @@ export const captureAppError = (error: unknown) => {
     return;
   }
 
-  Sentry.captureException(new Error('Unhandled runtime error'));
+  Sentry.captureException(new Error(String(error)));
 };
 
 export const captureAuthFailure = (error: unknown, { provider, mode }: AuthFailureTags) => {

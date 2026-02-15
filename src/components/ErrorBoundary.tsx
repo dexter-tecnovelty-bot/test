@@ -1,4 +1,4 @@
-import type { ErrorInfo, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Component } from 'react';
 import { captureAppError } from '../services/monitoring';
 import Button from './ui/Button';
@@ -21,9 +21,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  public componentDidCatch(error: Error): void {
     captureAppError(error);
-    captureAppError(new Error(errorInfo.componentStack || 'No component stack available'));
   }
 
   public render() {
@@ -42,7 +41,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               Reload page
             </Button>
             <a
-              href="/"
+              href="mailto:support@example.com"
               className="mt-4 inline-block text-sm font-semibold text-brand-primary underline"
             >
               Contact support

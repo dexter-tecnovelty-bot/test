@@ -51,7 +51,7 @@ const toAuthModeTag = (mode: AuthMode): AuthModeTag => {
 };
 
 const toError = (value: unknown): Error =>
-  value instanceof Error ? value : new Error('Authentication failed.');
+  value instanceof Error ? value : new Error(String(value));
 
 const AUTH_MODE_CONFIG: Record<
   AuthMode,
