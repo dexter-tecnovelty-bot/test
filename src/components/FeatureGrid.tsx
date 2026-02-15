@@ -10,7 +10,7 @@ interface FeatureItem {
 }
 
 interface FeatureGridProps {
-  items: FeatureItem[];
+  items: readonly FeatureItem[];
 }
 
 const FeatureGrid = ({ items }: FeatureGridProps) => (
