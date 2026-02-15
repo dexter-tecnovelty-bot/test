@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Analytics } from '@vercel/analytics/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { initializeMonitoring } from './services/monitoring';
 import './index.css';
+
+initializeMonitoring();
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -10,6 +14,7 @@ if (rootElement) {
     <React.StrictMode>
       <BrowserRouter>
         <App />
+        <Analytics />
       </BrowserRouter>
     </React.StrictMode>
   );

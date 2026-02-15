@@ -5,8 +5,11 @@ import Checkbox from './ui/Checkbox';
 import Input from './ui/Input';
 import Modal from './ui/Modal';
 import supabase from '../lib/supabase';
+import { trackAuthCompletion } from '../services/analytics';
+import { captureAuthFailure } from '../services/monitoring';
 
 type AuthMode = 'signup' | 'login' | 'magic_link';
+type AuthModeTag = 'signup' | 'login';
 type AuthField = 'email' | 'password' | 'acceptTerms';
 type AuthFieldErrors = Partial<Record<AuthField, string>>;
 
@@ -38,6 +41,17 @@ type AuthAction =
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const getCallbackUrl = () => `${window.location.origin}/auth/callback`;
+
+const toAuthModeTag = (mode: AuthMode): AuthModeTag => {
+  if (mode === 'signup') {
+    return 'signup';
+  }
+
+  return 'login';
+};
+
+const toError = (value: unknown): Error =>
+  value instanceof Error ? value : new Error(String(value));
 
 const AUTH_MODE_CONFIG: Record<
   AuthMode,
@@ -224,6 +238,10 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
         if (error) throw error;
 
         dispatch({ type: 'SUBMIT_SUCCEEDED' });
+        trackAuthCompletion({
+          provider: 'password',
+          mode: toAuthModeTag(mode),
+        });
 
         if (data.user && data.session) {
           onAuthSuccess(data.user.id);
@@ -246,6 +264,10 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
         if (error) throw error;
 
         dispatch({ type: 'SUBMIT_SUCCEEDED' });
+        trackAuthCompletion({
+          provider: 'magic-link',
+          mode: toAuthModeTag(mode),
+        });
         setSuccessMessage('Magic link sent. Check your email to continue.');
         return;
       }
@@ -258,6 +280,10 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
       if (error) throw error;
 
       dispatch({ type: 'SUBMIT_SUCCEEDED' });
+      trackAuthCompletion({
+        provider: 'password',
+        mode: toAuthModeTag(mode),
+      });
 
       if (data.user && data.session) {
         onAuthSuccess(data.user.id);
@@ -269,13 +295,21 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
         type: 'SUBMIT_FAILED',
         payload: { error: 'Authentication failed. Please try again.' },
       });
+      captureAuthFailure(new Error('Authentication failed without user session.'), {
+        provider: 'password',
+        mode: toAuthModeTag(mode),
+      });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Authentication error:', error);
-      const message = error instanceof Error ? error.message : 'Authentication failed.';
+      const normalizedError = toError(error);
+      captureAuthFailure(normalizedError, {
+        provider: mode === 'magic_link' ? 'magic-link' : 'password',
+        mode: toAuthModeTag(mode),
+      });
       dispatch({
         type: 'SUBMIT_FAILED',
-        payload: { error: mapAuthError(message) },
+        payload: { error: mapAuthError(normalizedError.message) },
       });
     }
   };
@@ -298,10 +332,14 @@ const AuthModal = ({ isOpen, initialMode, onClose, onAuthSuccess }: AuthModalPro
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Google OAuth error:', error);
-      const message = error instanceof Error ? error.message : 'Authentication failed.';
+      const normalizedError = toError(error);
+      captureAuthFailure(normalizedError, {
+        provider: 'google',
+        mode: toAuthModeTag(mode),
+      });
       dispatch({
         type: 'SUBMIT_FAILED',
-        payload: { error: mapAuthError(message) },
+        payload: { error: mapAuthError(normalizedError.message) },
       });
     }
   };
