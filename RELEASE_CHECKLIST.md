@@ -58,7 +58,7 @@ In Supabase Dashboard -> Authentication -> URL Configuration:
 - [ ] Login with email/password
 - [ ] Google OAuth redirect flow
 - [ ] Magic link sign-in flow
-- [ ] Password reset flow
+- [ ] Password reset flow (if implemented)
 
 ## Launch Window Monitoring (First 30 Minutes)
 
