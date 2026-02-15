@@ -73,7 +73,6 @@ const Hero = ({
                 alt="Product analytics dashboard preview"
                 width={1280}
                 height={720}
-                fetchPriority="high"
                 loading="eager"
                 decoding="async"
                 className="h-full w-full object-cover"
